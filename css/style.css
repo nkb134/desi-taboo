@@ -12,6 +12,8 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; margin: 0; }
+/* iOS Safari: pin the document so keyboard/toolbar changes can't leave the page scrolled and every fixed layer offset. */
+html, body { position: fixed; inset: 0; width: 100%; overflow: hidden; }
 body {
   font-family: var(--font-body); color: #fff; background: var(--bg1);
   background-image: radial-gradient(120% 90% at 50% -10%, var(--bg2), var(--bg1) 70%);

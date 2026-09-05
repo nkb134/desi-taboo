@@ -139,6 +139,7 @@ function toast(msg) {
   clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, 2600);
 }
 function startGame() {
+  if (document.activeElement) document.activeElement.blur(); resetScroll();
   Sfx.unlock(); Sfx.play('dhol'); Sfx.buzz(30);
   state.teams.forEach((t, i) => { t.name = t.name.trim() || TEAM_PRESETS[i].name; t.score = 0; });
   save(); renderTeams(); buildDeck(); state.turn = 0;
@@ -339,6 +340,12 @@ function bindOver() {
 load(); loadSeen(); Sfx.setEnabled(state.sound);
 renderTeams(); renderChips(); bindHome(); bindSwipe(); bindSummary(); bindOver();
 document.addEventListener('pointerdown', Sfx.unlock, { once: true });
+/* iOS Safari can scroll the document when the keyboard opens (even with overflow hidden) and leave it
+   offset afterwards, which shifts every fixed screen. Snap it back whenever the viewport settles. */
+const resetScroll = () => { if (window.scrollY || window.scrollX) window.scrollTo(0, 0); };
+document.addEventListener('focusout', () => setTimeout(resetScroll, 80));
+if (window.visualViewport) { window.visualViewport.addEventListener('resize', () => setTimeout(resetScroll, 80)); window.visualViewport.addEventListener('scroll', resetScroll); }
+window.addEventListener('orientationchange', () => setTimeout(resetScroll, 300));
 window.addEventListener('resize', () => { if (state.card) fitWord(); });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
