@@ -3,7 +3,9 @@ const Sfx = (() => {
   const NAMES = ['tap', 'tick', 'correct', 'taboo', 'skip', 'whoosh', 'countdown', 'go', 'timesup', 'dhol', 'win'];
   const sounds = {};
   let enabled = true;
-  for (const n of NAMES) sounds[n] = new Howl({ src: [`assets/sfx/${n}.wav`], preload: true });
+  // iOS silences WebAudio when the ring/silent switch is on; HTML5 audio keeps playing. Use it there.
+  const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  for (const n of NAMES) sounds[n] = new Howl({ src: [`assets/sfx/${n}.wav`], preload: true, html5: IOS, pool: 3 });
 
   function play(name, { rate = 1, volume = 1 } = {}) {
     if (!enabled) return;

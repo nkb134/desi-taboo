@@ -180,7 +180,9 @@ function startRound() {
   $('#round-team').textContent = `${t.emoji} ${t.name}`;
   $('#round-num').textContent = `R${Math.floor(state.turn / state.teams.length) + 1}`;
   $('#round-dot').style.setProperty('--c', t.color);
-  $('#timer').classList.remove('urgent');
+  $('#timer').classList.remove('urgent'); $('#time-bar').classList.remove('urgent');
+  $('#timer-num').textContent = state.settings.time; $('#time-fill').style.width = '100%';
+  $('#timer-bar').style.strokeDashoffset = 0;
   updateHud(); show('screen-round'); keepAwake(true);
   nextCard();
   clearInterval(state.timerId);
@@ -194,11 +196,15 @@ function updateHud() {
 }
 function tick() {
   const r = state.round; if (!r) return;
-  const left = Math.max(0, r.endsAt - Date.now()), sec = Math.ceil(left / 1000);
-  $('#timer-bar').style.strokeDashoffset = CIRC * (1 - left / (state.settings.time * 1000));
-  $('#timer-num').textContent = sec;
-  if (sec <= 10) $('#timer').classList.add('urgent');
-  if (sec !== r.lastSec) { r.lastSec = sec; if (sec <= 5 && sec > 0) { Sfx.play('tick', { rate: 1 + (5 - sec) * .08 }); Sfx.buzz(15); } }
+  const left = Math.max(0, r.endsAt - Date.now()), sec = Math.ceil(left / 1000), frac = left / (state.settings.time * 1000);
+  $('#timer-bar').style.strokeDashoffset = CIRC * (1 - frac);
+  $('#time-fill').style.width = (frac * 100) + '%';
+  const num = $('#timer-num');
+  if (sec !== r.lastSec) {
+    r.lastSec = sec; num.textContent = sec;
+    if (sec <= 10) { $('#timer').classList.add('urgent'); $('#time-bar').classList.add('urgent'); restart(num, 'beat'); }
+    if (sec <= 5 && sec > 0) { Sfx.play('tick', { rate: 1 + (5 - sec) * .06, volume: .45 }); Sfx.buzz(12); }
+  }
   if (left <= 0) endRound();
 }
 function nextCard() {

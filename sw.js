@@ -1,5 +1,5 @@
 // Offline cache for Desi Taboo. Network-first so updates land immediately; cache keeps it playable offline.
-const CACHE = 'desi-taboo-v2';
+const CACHE = 'desi-taboo-v3';
 const ASSETS = [
   './', './index.html', './css/style.css', './js/words.js', './js/audio.js', './js/app.js',
   './js/vendor/gsap.min.js', './js/vendor/howler.min.js', './js/vendor/confetti.min.js',
