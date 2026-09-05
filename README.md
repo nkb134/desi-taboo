@@ -29,6 +29,13 @@ in three difficulty levels.
 - [howler.js](https://github.com/goldfire/howler.js) — audio playback
 - [canvas-confetti](https://github.com/catdad/canvas-confetti) — celebrations
 
+## Sounds
+
+Two packs, switchable on the home screen: **Viral** ("FAAA!" on Taboo, sad "ummm…" on Skip, "Waaah!" on
+Got it) and **Classic** (chimes and buzzers). The "ummm" and "Waaah" clips are synthesized; `faa.mp3` is a
+user-supplied clip. To swap any clip, replace the file in `assets/sfx/` keeping the same name, or edit the
+`PACKS` / `EXT` maps in `js/audio.js`.
+
 ## Add words
 
 Edit `js/words.js`. Each entry is `[word, difficulty, category, [five taboo words]]`.

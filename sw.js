@@ -1,10 +1,11 @@
 // Offline cache for Desi Taboo. Network-first so updates land immediately; cache keeps it playable offline.
-const CACHE = 'desi-taboo-v4';
+const CACHE = 'desi-taboo-v6';
 const ASSETS = [
   './', './index.html', './css/style.css', './js/words.js', './js/audio.js', './js/app.js',
   './js/vendor/gsap.min.js', './js/vendor/howler.min.js', './js/vendor/confetti.min.js',
   './manifest.webmanifest', './icon.svg',
-  ...['tap', 'tick', 'correct', 'taboo', 'skip', 'whoosh', 'countdown', 'go', 'timesup', 'dhol', 'win'].map(n => `./assets/sfx/${n}.wav`)
+  './assets/sfx/faa.mp3',
+  ...['tap', 'tick', 'correct', 'taboo', 'skip', 'whoosh', 'countdown', 'go', 'timesup', 'dhol', 'win', 'umm', 'wah'].map(n => `./assets/sfx/${n}.wav`)
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

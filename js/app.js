@@ -17,7 +17,7 @@ const CIRC = 276.46;
 const SWIPE_X = 95, SWIPE_Y = 110;
 
 const state = {
-  teams: [], settings: { time: 60, passes: 3, diff: 0, rounds: 3 }, sound: true,
+  teams: [], settings: { time: 60, passes: 3, diff: 0, rounds: 3, pack: 'viral' }, sound: true,
   deck: [], pos: 0, turn: 0, round: null, card: null, timerId: null, wakeLock: null, seen: new Set(),
 };
 
@@ -94,14 +94,16 @@ function renderTeams() {
 function renderChips() {
   $$('.chips').forEach(g => {
     const key = g.dataset.setting;
-    $$('button', g).forEach(b => b.classList.toggle('on', +b.dataset.v === state.settings[key]));
+    $$('button', g).forEach(b => b.classList.toggle('on', String(b.dataset.v) === String(state.settings[key])));
   });
   $('#btn-sound').textContent = state.sound ? '🔊' : '🔇';
 }
 function bindHome() {
   $$('.chips').forEach(g => g.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
-    state.settings[g.dataset.setting] = +b.dataset.v; save(); renderChips(); Sfx.play('tap');
+    const key = g.dataset.setting, v = key === 'pack' ? b.dataset.v : +b.dataset.v;
+    state.settings[key] = v; save(); renderChips();
+    if (key === 'pack') { Sfx.setPack(v); Sfx.play('correct'); } else Sfx.play('tap');
     gsap.fromTo(b, { scale: .85 }, { scale: 1, duration: .35, ease: 'back.out(3)' });
   }));
   $('#btn-add-team').addEventListener('click', () => {
@@ -337,7 +339,7 @@ function bindOver() {
 }
 
 /* ---------- init ---------- */
-load(); loadSeen(); Sfx.setEnabled(state.sound);
+load(); loadSeen(); Sfx.setEnabled(state.sound); Sfx.setPack(state.settings.pack);
 renderTeams(); renderChips(); bindHome(); bindSwipe(); bindSummary(); bindOver();
 document.addEventListener('pointerdown', Sfx.unlock, { once: true });
 /* iOS Safari can scroll the document when the keyboard opens (even with overflow hidden) and leave it
