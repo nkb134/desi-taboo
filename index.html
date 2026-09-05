@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1a0b3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Desi Taboo — the Indian party word game. Describe the word without saying the taboo words!">
+<title>Desi Taboo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<!-- ============ HOME ============ -->
+<section class="screen active" id="screen-home">
+  <header class="topbar">
+    <button class="icon-btn" id="btn-help" aria-label="How to play">?</button>
+    <button class="icon-btn" id="btn-sound" aria-label="Toggle sound">🔊</button>
+  </header>
+  <div class="hero">
+    <div class="logo">
+      <span class="logo-word">
+        <b>T</b><b>A</b><b>B</b><b>O</b><b>O</b>
+      </span>
+      <span class="logo-tag">Desi Edition</span>
+    </div>
+    <p class="hero-sub">Describe the word. Dodge the taboos. <br>Chai, cricket, Bollywood &amp; full-on jugaad.</p>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel-title">Teams</h2>
+    <div id="team-list" class="team-list"></div>
+    <button class="btn ghost small" id="btn-add-team">+ Add team</button>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel-title">Settings</h2>
+    <div class="setting">
+      <span class="setting-label">⏱ Round time</span>
+      <div class="chips" data-setting="time">
+        <button data-v="30">30s</button><button data-v="60">60s</button><button data-v="90">90s</button><button data-v="120">2m</button>
+      </div>
+    </div>
+    <div class="setting">
+      <span class="setting-label">↷ Free passes per round</span>
+      <div class="chips" data-setting="passes">
+        <button data-v="0">None</button><button data-v="1">1</button><button data-v="3">3</button><button data-v="99">∞</button>
+      </div>
+    </div>
+    <div class="setting">
+      <span class="setting-label">🌶 Difficulty</span>
+      <div class="chips" data-setting="diff">
+        <button data-v="0">Mix</button><button data-v="1">Easy</button><button data-v="2">Medium</button><button data-v="3">Hard</button>
+      </div>
+    </div>
+    <div class="setting">
+      <span class="setting-label">🔁 Rounds per team <small class="muted">(each team gets one turn per round)</small></span>
+      <div class="chips" data-setting="rounds">
+        <button data-v="2">2</button><button data-v="3">3</button><button data-v="5">5</button><button data-v="7">7</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel scoring">
+    <h2 class="panel-title">Points</h2>
+    <div class="points"><span class="pt got">✓ Got it <b>+1</b></span><span class="pt taboo">🔔 Taboo <b>−1</b></span><span class="pt skip">↷ Pass <b>0</b></span></div>
+    <p class="muted small">Highest total after all rounds wins. Scorecard shows after every turn.</p>
+  </div>
+
+  <div class="sticky-cta">
+    <button class="btn primary xl" id="btn-start">Start Game 🎉</button>
+    <p class="footnote"><span id="word-count">0</span> desi words · <span id="played-count">0</span> played <button class="link" id="btn-reset-history" hidden>Reset history</button></p>
+  </div>
+</section>
+
+<!-- ============ HANDOFF ============ -->
+<section class="screen" id="screen-handoff">
+  <div class="handoff stagger">
+    <div class="progress" id="handoff-progress"></div>
+    <p class="eyebrow" id="handoff-round">Round 1 of 3</p>
+    <div class="big-avatar" id="handoff-avatar">🌶️</div>
+    <h1 class="team-name-big" id="handoff-team">Team Masala</h1>
+    <p class="up-next">is up next!</p>
+    <div class="handoff-steps">
+      <div class="step"><span class="step-ico">📱</span><p>Hand the phone to your <b>clue-giver</b>. Only they see the card.</p></div>
+      <div class="step"><span class="step-ico">🔔</span><p id="handoff-buzzer"><b>Team Mirchi</b> watches the screen and hits <b>Taboo</b> if a banned word slips out.</p></div>
+    </div>
+    <div class="scoreboard mini" id="handoff-scores"></div>
+    <button class="btn primary xl" id="btn-ready">I'm the clue-giver — Show cards ▶</button>
+    <button class="btn ghost small" id="btn-quit">Quit game</button>
+  </div>
+</section>
+
+<!-- ============ COUNTDOWN ============ -->
+<section class="screen" id="screen-countdown">
+  <div class="countdown" id="countdown-num">3</div>
+</section>
+
+<!-- ============ ROUND ============ -->
+<section class="screen" id="screen-round">
+  <header class="round-top">
+    <div class="round-team">
+      <span class="dot" id="round-dot"></span>
+      <span id="round-team">Team</span>
+      <span class="pill tiny" id="round-num">R1</span>
+    </div>
+    <div class="timer" id="timer">
+      <svg viewBox="0 0 100 100">
+        <circle class="track" cx="50" cy="50" r="44"/>
+        <circle class="bar" id="timer-bar" cx="50" cy="50" r="44"/>
+      </svg>
+      <span id="timer-num">60</span>
+    </div>
+    <div class="round-stats">
+      <span class="pill score" id="round-score">+0</span>
+      <span class="pill skips" id="round-skips">↷ 3</span>
+    </div>
+  </header>
+
+  <div class="card-stage">
+    <article class="card" id="card">
+      <div class="card-meta">
+        <span class="badge" id="card-diff">Easy</span>
+        <span class="cat" id="card-cat">Food</span>
+      </div>
+      <h1 class="word" id="card-word">Chai</h1>
+      <div class="divider"><span>don't say</span></div>
+      <ul class="taboo-list" id="card-taboo"></ul>
+      <p class="swipe-hint">← swipe taboo · swipe got it → · ↑ pass</p>
+      <div class="stamp got">GOT IT ✓</div><div class="stamp taboo">TABOO ✕</div><div class="stamp skip">PASS ↷</div>
+    </article>
+  </div>
+
+  <div class="actions">
+    <button class="act taboo" id="btn-taboo"><span class="ico">🔔</span><span>Taboo!</span><small>buzz · −1</small></button>
+    <button class="act skip" id="btn-skip"><span class="ico">↷</span><span>Skip</span><small>0</small></button>
+    <button class="act got" id="btn-got"><span class="ico">✓</span><span>Got it!</span><small>+1</small></button>
+  </div>
+</section>
+
+<!-- ============ SUMMARY ============ -->
+<section class="screen" id="screen-summary">
+  <div class="summary stagger">
+    <p class="eyebrow">Time's up!</p>
+    <h1 class="team-name-big" id="summary-team">Team</h1>
+    <div class="big-score" id="summary-score">+0</div>
+    <p class="hint">Tap a word to change its result if there's a dispute.</p>
+    <ul class="result-list" id="summary-list"></ul>
+    <p class="eyebrow">Scorecard</p>
+    <div class="scoreboard mini" id="summary-scores"></div>
+    <button class="btn primary xl" id="btn-next">Next ➜</button>
+  </div>
+</section>
+
+<!-- ============ GAME OVER ============ -->
+<section class="screen" id="screen-over">
+  <div class="over stagger">
+    <p class="eyebrow">Game over</p>
+    <div class="trophy">🏆</div>
+    <h1 class="team-name-big" id="winner-name">Team</h1>
+    <p class="hint" id="winner-msg">wins the game!</p>
+    <div class="scoreboard" id="final-scores"></div>
+    <button class="btn primary xl" id="btn-again">Play again 🔁</button>
+    <button class="btn ghost" id="btn-home">Back to home</button>
+  </div>
+</section>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- ============ HELP MODAL ============ -->
+<div class="modal" id="modal-help" hidden>
+  <div class="modal-card">
+    <h2>How to play</h2>
+    <ol>
+      <li><b>Split into teams.</b> One player is the clue-giver each round; the rest of their team guesses.</li>
+      <li><b>Describe the word</b> at the top of the card without saying it, or any of the 5 <span class="t">taboo</span> words below it. No rhymes, no "sounds like", no spelling!</li>
+      <li><b>Got it ✓</b> = +1 point. <b>Taboo ✕</b> (you said a banned word) = −1. <b>Pass ↷</b> = 0 points, but free passes are limited. You can also swipe the card: right = got it, left = taboo, up = pass.</li>
+      <li><b>Opponents watch the phone</b> and press Taboo if the clue-giver slips up.</li>
+      <li>The team with the most points after all rounds wins. Full paisa vasool!</li>
+    </ol>
+    <button class="btn primary" id="btn-help-close">Got it!</button>
+  </div>
+</div>
+
+<script src="js/words.js"></script>
+<script src="js/vendor/gsap.min.js"></script>
+<script src="js/vendor/howler.min.js"></script>
+<script src="js/vendor/confetti.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

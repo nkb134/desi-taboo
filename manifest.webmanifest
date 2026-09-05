@@ -1,0 +1,11 @@
+{
+  "name": "Desi Taboo",
+  "short_name": "Taboo",
+  "description": "The Indian party word game. Describe the word without saying the taboo words!",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a0b3d",
+  "theme_color": "#1a0b3d",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
